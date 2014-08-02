@@ -2,9 +2,7 @@
  * リクエストパラメータ(URL)に応じて実行されるメソッド群を記述
  * router.jsを介して呼び出される
  */
-var querystring = require('querystring'),
-		fs = require('fs'),
-		formidable = require('formidable'),
+var fs = require('fs'),
 		pg = require('pg');
 
 var property = require('./property');
