@@ -70,18 +70,9 @@ function addTodo(res, postData) {
 		if(err) {
 			console.log('connect error...');
 		}
-		// アップデート日付作成
-		var d = new Date();
-		var year  = d.getFullYear();
-		var month = d.getMonth() + 1;
-		var day   = d.getDate();
-		var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-		var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-		var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-		var dayStr = year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
-
+		var dayStr = createDateString();
 		// クエリ発行
-		var queryStr = 'insert into t_todo (todo, created_at) values (\'' + postData + '\', \'' + dayStr + '\')';
+		var queryStr = 'insert into t_todo (todo, created_at, updated_at) values (\'' + postData + '\', \'' + dayStr + '\', \'' + dayStr + '\')';
 		console.log(queryStr);
 		client.query(queryStr, function(err, result) {
 			if(err) {
@@ -140,8 +131,9 @@ function updateTodo(res, postData) {
 		if(err) {
 			console.log('connect error...');
 		}
+		var dayStr = createDateString();
 		// クエリ発行
-		var queryStr = 'update t_todo set todo=\''+ postObj.todo +'\' where id=' + postObj.id + '';
+		var queryStr = 'update t_todo set todo=\''+ postObj.todo +'\', updated_at=\'' + dayStr + '\' where id=' + postObj.id + '';
 		console.log(queryStr);
 		client.query(queryStr, function(err, result) {
 			if(err) {
@@ -170,8 +162,9 @@ function changeStateTodo(res, postData) {
 		if(err) {
 			console.log('connect error...');
 		}
+		var dayStr = createDateString();
 		// クエリ発行
-		var queryStr = 'update t_todo set done_todo=\'' + postObj.doneTodo + '\' where id=' + postObj.id + '';
+		var queryStr = 'update t_todo set done_todo=\'' + postObj.doneTodo + '\', updated_at=\'' + dayStr + '\' where id=' + postObj.id + '';
 		console.log(queryStr);
 		client.query(queryStr, function(err, result) {
 			if(err) {
@@ -185,6 +178,21 @@ function changeStateTodo(res, postData) {
 			client.end();
 		});
 	});
+}
+
+/**
+ * DB登録用日付生成
+ * @return {[type]} [description]
+ */
+function createDateString() {
+		var d = new Date();
+		var year  = d.getFullYear();
+		var month = d.getMonth() + 1;
+		var day   = d.getDate();
+		var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
+		var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
+		var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
+		return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }
 
 exports.start = start;
